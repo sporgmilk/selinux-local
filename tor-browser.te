@@ -1,0 +1,11 @@
+module tor-browser 1.0;
+
+gen_require(`
+    type tor_port_t;
+    class tcp_socket name_bind;
+    attribute unpriv_userdomain, port_type;
+')
+
+type torbrowser_port_t, port_type;
+allow unpriv_userdomain tor_port_t:tcp_socket name_bind;
+allow unpriv_userdomain torbrowser_port_t:tcp_socket name_bind;

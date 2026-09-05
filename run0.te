@@ -1,0 +1,8 @@
+policy_module(run0, 1.0)
+
+gen_require(`
+    type init_t;
+    type staff_t;
+')
+allow staff_t init_t:system start;
+

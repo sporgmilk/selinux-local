@@ -1,0 +1,41 @@
+
+module bwrap 1.0;
+
+require {
+	type gconf_home_t;
+	type var_home_t;
+	type user_home_dir_t;
+	type usr_t;
+	type dosfs_t;
+	type config_home_t;
+	type staff_t;
+	type thumb_t;
+	type proc_t;
+	type cache_home_t;
+	type data_home_t;
+	type lib_t;
+	class filesystem { mount remount };
+	class cap_userns net_admin;
+	class file mounton;
+	class dir mounton;
+}
+
+#============= staff_t ==============
+allow staff_t cache_home_t:dir mounton;
+allow staff_t config_home_t:dir mounton;
+allow staff_t data_home_t:dir mounton;
+allow staff_t data_home_t:file mounton;
+
+#!!!! This avc is allowed in the current policy
+allow staff_t dosfs_t:filesystem remount;
+allow staff_t gconf_home_t:dir mounton;
+allow staff_t lib_t:file mounton;
+
+#!!!! This avc is allowed in the current policy
+allow staff_t self:cap_userns net_admin;
+allow staff_t user_home_dir_t:dir mounton;
+allow staff_t usr_t:dir mounton;
+allow staff_t var_home_t:dir mounton;
+
+#============= thumb_t ==============
+allow thumb_t proc_t:filesystem mount;

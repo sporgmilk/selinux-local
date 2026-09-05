@@ -1,0 +1,17 @@
+
+module power-profiles-daemon 1.1;
+
+require {
+	type staff_t;
+	type powerprofiles_t;
+	class dbus send_msg;
+}
+
+#============= powerprofiles_t ==============
+
+
+allow powerprofiles_t staff_t:dbus send_msg;
+
+#============= staff_t ==============
+
+allow staff_t powerprofiles_t:dbus send_msg;

@@ -1,0 +1,47 @@
+
+module bwrapV2 1.0;
+
+require {
+	type fonts_t;
+	type bin_t;
+	type tmpfs_t;
+	type sysadm_flatpak_t;
+	type lib_t;
+	type usr_t;
+	type staff_t;
+	type gconf_home_t;
+	type data_home_t;
+	type sysctl_irq_t;
+	type var_home_t;
+	type user_home_dir_t;
+	type sysctl_t;
+	type locale_t;
+	type var_lib_t;
+	type config_home_t;
+	type cache_home_t;
+	class dir { mounton write };
+	class file { execute execute_no_trans mounton write };
+	class capability dac_override;
+}
+
+#============= staff_t ==============
+allow staff_t bin_t:file mounton;
+allow staff_t cache_home_t:dir mounton;
+allow staff_t config_home_t:dir mounton;
+allow staff_t data_home_t:dir mounton;
+allow staff_t data_home_t:file mounton;
+allow staff_t fonts_t:dir mounton;
+allow staff_t gconf_home_t:dir mounton;
+allow staff_t lib_t:dir mounton;
+allow staff_t lib_t:file mounton;
+allow staff_t locale_t:file mounton;
+allow staff_t sysctl_t:file write;
+allow staff_t tmpfs_t:dir mounton;
+allow staff_t user_home_dir_t:dir mounton;
+allow staff_t usr_t:dir mounton;
+allow staff_t var_home_t:dir mounton;
+allow staff_t var_lib_t:file { execute execute_no_trans mounton };
+
+#============= sysadm_flatpak_t ==============
+allow sysadm_flatpak_t self:capability dac_override;
+allow sysadm_flatpak_t sysctl_irq_t:dir { mounton write };
