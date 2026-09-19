@@ -1,0 +1,13 @@
+module warp-taskbar 1.0;
+
+require {
+    type staff_t;
+    type unconfined_service_t;
+    class unix_stream_socket connectto;
+    type var_run_t;
+    class sock_file write;
+}
+
+#============= staff_t ==============
+allow staff_t unconfined_service_t:unix_stream_socket connectto;
+allow staff_t var_run_t:sock_file write;
