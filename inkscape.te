@@ -1,0 +1,11 @@
+
+require {
+	type colord_var_lib_t;
+	type staff_t;
+	class dir read;
+}
+
+#============= staff_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow staff_t colord_var_lib_t:dir read;
