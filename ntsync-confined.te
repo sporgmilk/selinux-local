@@ -1,17 +1,13 @@
-policy_module(ntsync-confined, 1.0)
+policy_module(ntsync-confined, 1.1)
 
 gen_require(`
     type staff_t;
     type staff_wine_t;
     type device_t;
-    type staff_flatpak_t;
-    class chr_file { ioctl open read getattr };
+    class chr_file { ioctl open read };
 ')
 #============= staff_t ==============
 allow staff_t device_t:chr_file { ioctl read };
 
 #============= staff_wine_t ==============
 allow staff_wine_t device_t:chr_file { ioctl open read };
-
-#============= staff_flatpak_t ==============
-allow staff_flatpak_t device_t:chr_file getattr;
