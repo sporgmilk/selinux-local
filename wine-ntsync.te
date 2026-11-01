@@ -1,0 +1,9 @@
+policy_module(wine-ntsync, 1.0)
+gen_require(`
+    type staff_t;
+    type staff_wine_t;
+    type device_t;
+    class chr_file { ioctl open read getattr };
+')
+allow staff_t device_t:chr_file { ioctl read };
+allow staff_wine_t device_t:chr_file { ioctl open read };

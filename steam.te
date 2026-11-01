@@ -1,0 +1,401 @@
+policy_module(steam, 1.0.0)
+
+attribute_role steam_roles;
+roleattribute system_r steam_roles;
+
+type steam_t;
+type steam_exec_t;
+application_domain(steam_t, steam_exec_t)
+role steam_roles types steam_t;
+
+type steam_home_t;
+userdom_user_home_content(steam_home_t);
+
+require {
+    type session_dbusd_tmp_t;
+    type system_dbusd_var_run_t;
+    type usr_t;
+    type net_conf_t;
+    type pidfile;
+    type fs_t;
+    type var_t;
+    type var_run_t;
+    type root_t;
+    type userfaultfd_device_t;
+    type vhost_device_t;
+    type watchdog_device_t;
+    type wireless_device_t;
+    type kmsg_device_t;
+    type kvm_device_t;
+    type loop_control_device_t;
+    type lvm_control_t;
+    type mei_device_t;
+    type memory_device_t;
+    type netcontrol_device_t;
+    type nvram_device_t;
+    type ppp_device_t;
+    type printer_device_t;
+    type proc_kcore_t;
+    type ptmx_t;
+    type random_device_t;
+    type scsi_generic_device_t;
+    type uhid_device_t;
+    type usb_device_t;
+    type usbmon_device_t;
+    type apm_bios_t;
+    type autofs_device_t;
+    type clock_device_t;
+    type console_device_t;
+    type cpu_device_t;
+    type fuse_device_t;
+    type binfmt_misc_fs_t;
+    type cgroup_t;
+    type dosfs_t;
+    type home_bin_t;
+    type user_fonts_config_t;
+    type bin_t;
+    type shell_exec_t;
+    type devlog_t;
+    type syslogd_t;
+    type mcelog_t;
+    type syslogd_var_run_t;
+    type irqbalance_t;
+    type kernel_t;
+    type system_dbusd_t;
+    type xdm_t;
+    type mount_t;
+    type mnt_t;
+    type fixed_disk_device_t;
+    type fsdaemon_t;
+    type hwdata_t;
+    type proc_net_t;
+    type proc_psi_t;
+    type proc_t;
+    type sysctl_dev_t;
+    type sysctl_fs_t;
+    type sysctl_net_t;
+    type http_port_t;
+    type afs_bos_port_t;
+    type node_t;
+    type unreserved_port_t;
+    type ephemeral_port_t;
+    type devicekit_power_t;
+    type devicekit_disk_t;
+    type staff_dbusd_t;
+    type tmp_t;
+    type user_tmpfs_t;
+    type tmpfs_t;
+	type user_tmp_t;
+	type steam_t;
+	type device_t;
+	type gconf_home_t;
+	type data_home_t;
+	type user_home_dir_t;
+	type cache_home_t;
+	type staff_t;
+	type user_fonts_cache_t;
+	type user_fonts_t;
+	type config_home_t;
+    type xserver_t;
+    type pulseaudio_home_t;
+    type ldconfig_exec_t;
+    type dma_device_t;
+    type dri_device_t;
+    type init_t;
+    type rtkit_daemon_t;
+    type alsa_t;
+    type auditd_t;
+    type avahi_t;
+    type cert_t;
+    type chronyd_restricted_t;
+    type crond_t;
+    type cupsd_t;
+    type devlog_t;
+    type event_device_t;
+    type firewalld_t;
+    type gpm_t;
+    type howl_port_t;
+    type ipp_port_t;
+    type mnt_t;
+    type mongod_port_t;
+    type nsfs_t;
+    type policykit_t;
+    type sysctl_net_t;
+    type systemd_logind_t;
+    type systemd_oomd_t;
+    type systemd_resolved_t;
+    type tty_device_t;
+    type tuned_ppd_t;
+    type tuned_t;
+    type unconfined_service_t;
+    type usb_device_t;
+    type user_home_t;
+    type userfaultfd_t;
+    class unix_stream_socket { getattr ioctl connectto };
+	class dir { add_name create getattr mounton open read remove_name rmdir search setattr watch write };
+	class file { create execute getattr link lock map mounton open read rename setattr unlink write };
+    class dbus { acquire_svc send_msg };
+    class proccess setsched;
+    class fifo_file write;
+}
+
+allow steam_t self:fifo_file manage_fifo_file_perms;
+allow steam_t self:unix_stream_socket create_stream_socket_perms;
+allow steam_t self:cap_userns { setpcap sys_admin sys_chroot sys_ptrace };
+allow steam_t self:dir { add_name write };
+allow steam_t self:netlink_kobject_uevent_socket { bind create getattr getopt setopt read };
+allow steam_t self:netlink_route_socket { bind create getattr nlmsg_read read write };
+allow steam_t self:process { execmem ptrace setcap setrlimit setsched execstack};
+allow steam_t self:tcp_socket { accept bind connect create getattr getopt listen setopt shutdown read write };
+allow steam_t self:udp_socket { bind connect create getattr ioctl setopt shutdown getopt read write };
+allow steam_t self:unix_dgram_socket { connect create getattr getopt setattr setopt write };
+allow steam_t self:unix_stream_socket { connectto sendto read write };
+allow steam_t self:user_namespace create;
+allow steam_t self:file create;
+allow steam_t self:cap_userns { setpcap sys_admin sys_chroot sys_ptrace };
+
+manage_dirs_pattern(steam_t, steam_home_t, steam_home_t)
+manage_files_pattern(steam_t, steam_home_t, steam_home_t)
+manage_lnk_files_pattern(steam_t, steam_home_t, steam_home_t)
+allow steam_t steam_home_t:fifo_file { getattr open read write };
+allow steam_t steam_home_t:file { execute execute_no_trans mounton map execmod };
+allow steam_t steam_home_t:dir mounton;
+
+# Required for xwayland
+allow steam_t session_dbusd_tmp_t:sock_file { write getattr unlink };
+allow steam_t session_dbusd_tmp_t:dir { getattr search open lock ioctl write remove_name };
+allow steam_t session_dbusd_tmp_t:sock_file { getattr unlink };
+allow steam_t system_dbusd_t:dir { getattr search };
+allow steam_t system_dbusd_t:file { getattr open read };
+allow steam_t devicekit_disk_t:dbus send_msg;
+allow devicekit_disk_t steam_t:dbus send_msg;
+allow staff_t steam_t:process { noatsecure rlimitinh siginh };
+allow staff_dbusd_t steam_t:fifo_file write;
+allow staff_dbusd_t tmp_t:file write;
+allow staff_t steam_t:dbus send_msg;
+
+# Required by the client
+allow steam_t dma_device_t:chr_file { getattr ioctl open read write };
+allow steam_t dri_device_t:chr_file { getattr ioctl map open read write };
+allow steam_t devicekit_disk_t:dir { getattr search };
+allow steam_t devicekit_disk_t:file { getattr open read };
+allow steam_t devicekit_power_t:dir { getattr search };
+allow steam_t devicekit_power_t:file { getattr open read };
+
+# Required for multiplayer and the client
+allow steam_t ephemeral_port_t:tcp_socket name_connect;
+allow steam_t http_port_t:tcp_socket name_connect;
+allow steam_t afs_bos_port_t:udp_socket name_bind;
+allow steam_t node_t:tcp_socket node_bind;
+allow steam_t node_t:udp_socket node_bind;
+allow steam_t unreserved_port_t:tcp_socket name_connect;
+allow steam_t unreserved_port_t:udp_socket name_bind;
+
+# Maybe source games only?
+allow steam_t xdm_t:dir { getattr search };
+allow steam_t xdm_t:file { getattr open read };
+allow steam_t xserver_t:dir { getattr open read search };
+allow steam_t xserver_t:file { getattr open read };
+allow steam_t xserver_t:lnk_file read;
+
+# Required for the client
+allow steam_t home_root_t:dir { ioctl read };
+allow steam_t bin_t:file { execute execute_no_trans map };
+allow steam_t ldconfig_exec_t:file { execute execute_no_trans open read map };
+allow steam_t shell_exec_t:file { execute execute_no_trans map };
+
+# Required for xwayland and tray
+allow steam_t staff_t:lnk_file read;
+allow steam_t staff_t:dir { getattr open read search };
+allow steam_t staff_t:file { getattr open read };
+allow steam_t staff_t:unix_stream_socket { connectto getattr ioctl read write };
+allow steam_t staff_dbusd_t:dbus send_msg;
+allow steam_t staff_t:dbus send_msg;
+allow steam_t staff_dbusd_t:dir { getattr open read search };
+allow steam_t staff_dbusd_t:file { getattr open read };
+allow steam_t staff_dbusd_t:lnk_file read;
+allow steam_t staff_dbusd_t:unix_stream_socket connectto;
+allow steam_t staff_dbusd_t:dbus acquire_svc;
+
+# required log access
+allow steam_t syslogd_var_run_t:sock_file { getattr write };
+allow steam_t devlog_t:lnk_file read;
+allow steam_t mcelog_t:dir { getattr search };
+allow steam_t mcelog_t:file { getattr open read };
+allow steam_t syslogd_t:dir { getattr search };
+allow steam_t syslogd_t:file { getattr open read };
+allow steam_t syslogd_t:dir { getattr search };
+allow steam_t syslogd_t:file { getattr open read };
+allow steam_t syslogd_var_run_t:sock_file write;
+allow steam_t devlog_t:lnk_file read;
+allow steam_t mcelog_t:dir { getattr search };
+allow steam_t mcelog_t:file { getattr open read };
+
+# needed for user_namespace
+allow steam_t root_t:dir { { getattr search open } mounton };
+
+# internet access during startup
+allow steam_t proc_net_t:file { getattr open read };
+allow steam_t proc_net_t:lnk_file read;
+allow steam_t proc_psi_t:dir search;
+allow steam_t proc_psi_t:file { getattr open read };
+allow steam_t proc_t:dir read;
+allow steam_t proc_t:file { getattr open read };
+allow steam_t proc_t:filesystem associate;
+allow steam_t sysctl_dev_t:file { getattr open read };
+allow steam_t sysctl_dev_t:dir search;
+allow steam_t sysctl_fs_t:file { getattr open read };
+allow steam_t sysctl_net_t:dir search;
+allow steam_t sysctl_net_t:file { open read };
+
+#---needs to fully checked
+# caches and tmp dirs
+allow steam_t cache_home_t:dir mounton;
+allow steam_t cache_home_t:dir { add_name mounton remove_name write };
+allow steam_t device_t:dir { mounton watch };
+allow steam_t tmpfs_t:filesystem { mount remount unmount getattr };
+allow steam_t tmpfs_t:lnk_file { create getattr setattr read write append rename link unlink ioctl lock watch watch_reads };
+allow steam_t tmp_t:dir { add_name create mounton read remove_name rmdir write };
+allow steam_t tmp_t:lnk_file create;
+allow steam_t tmp_t:sock_file { create getattr setattr write unlink };
+allow steam_t tmp_t:file { create execute open setattr unlink write map rename };
+allow steam_t tmpfs_t:dir { create mounton setattr watch };
+allow steam_t tmpfs_t:file { create getattr link lock mounton open read rename setattr unlink write map };
+allow steam_t user_tmp_t:dir { add_name create getattr mounton open read remove_name rmdir write search ioctl read };
+allow steam_t user_tmp_t:sock_file { create getattr read setattr unlink write }; 
+allow steam_t user_tmp_t:fifo_file { create getattr open read unlink write };
+allow steam_t user_tmp_t:file { create execute link mounton open rename setattr unlink };
+allow steam_t user_fonts_cache_t:dir { add_name remove_name getattr search write };
+allow steam_t user_fonts_cache_t:file { create getattr link lock open read rename unlink write map };
+allow steam_t user_fonts_cache_t:lnk_file { read unlink };
+allow steam_t user_fonts_t:dir { open read search remove_name getattr setattr write add_name };
+allow steam_t user_fonts_t:file { open unlink map create link rename write };
+allow steam_t user_fonts_config_t:dir search;
+gnome_exec_config_home_files(steam_t)
+gnome_manage_generic_cache_files(steam_t)
+gnome_map_generic_cache_files(steam_t)
+gnome_read_generic_data_home_files(steam_t)
+allow steam_t gconf_home_t:dir { ioctl read };
+
+allow user_tmpfs_t tmpfs_t:filesystem associate;
+allow steam_t tmpfs_t:dir { open read getattr lock search ioctl add_name remove_name write };
+
+allow steam_t config_home_t:dir { mounton read };
+allow steam_t config_home_t:dir { getattr mounton open read search };
+allow steam_t user_home_t:dir { getattr open read search mounton };
+allow steam_t gconf_home_t:dir mounton;
+allow steam_t home_bin_t:dir search;
+allow steam_t user_home_dir_t:dir mounton;
+allow steam_t data_home_t:dir { mounton read map };
+allow steam_t user_home_t:dir read;
+allow steam_t gconf_home_t:dir mounton;
+
+
+
+allow steam_t var_t:lnk_file { getattr read };
+allow steam_t var_run_t:lnk_file { getattr read };
+allow steam_t var_t:dir { getattr search open };
+allow steam_t var_run_t:dir { getattr search open };
+
+allow steam_t system_dbusd_var_run_t:dir { getattr search open };
+allow steam_t system_dbusd_var_run_t:dir { getattr search open read lock ioctl };
+allow steam_t system_dbusd_var_run_t:dir { getattr search open };
+allow steam_t system_dbusd_var_run_t:sock_file { getattr open read };
+
+allow steam_t net_conf_t:dir { getattr search open };
+allow steam_t net_conf_t:file { open { getattr read ioctl lock } };
+allow steam_t net_conf_t:dir { getattr search open };
+allow steam_t net_conf_t:lnk_file { getattr read };
+allow steam_t net_conf_t:dir { getattr search open };
+allow steam_t net_conf_t:dir { getattr search open read lock ioctl };
+
+allow steam_t pidfile:dir { getattr search open };
+
+allow steam_t cgroup_t:dir search;
+
+allow steam_t device_t:dir { mounton watch };
+allow steam_t dosfs_t:dir getattr;
+allow steam_t fs_t:filesystem { unmount getattr };
+allow steam_t fsdaemon_t:dir { getattr search };
+allow steam_t fsdaemon_t:file { getattr open read };
+allow steam_t fixed_disk_device_t:blk_file getattr;
+
+allow steam_t hwdata_t:dir search;
+allow steam_t hwdata_t:file getattr;
+
+allow steam_t irqbalance_t:dir { getattr search };
+allow steam_t irqbalance_t:file { getattr open read };
+
+allow steam_t mnt_t:dir read;
+allow steam_t mount_t:dir { getattr search };
+allow steam_t mount_t:file { getattr open read };
+
+allow steam_t pulseaudio_home_t:dir search;
+allow steam_t pulseaudio_home_t:file { lock open read };
+
+allow steam_t kernel_t:dir { getattr search };
+allow steam_t kernel_t:file { getattr open read };
+allow steam_t kernel_t:system ipc_info;
+allow steam_t kernel_t:unix_dgram_socket sendto;
+allow steam_t kernel_t:unix_stream_socket connectto;
+
+allow steam_t ldconfig_exec_t:file { execute execute_no_trans open read map };
+
+#--- Supress audit logs
+dontaudit init_t steam_t:dbus send_msg;
+dontaudit rtkit_daemon_t steam_t:process setsched;
+dontaudit steam_t alsa_t:dir { getattr read search };
+dontaudit steam_t auditd_t:dir { getattr read search };
+dontaudit steam_t avahi_t:dir { getattr read search };
+dontaudit steam_t cert_t:dir read;
+dontaudit steam_t chronyd_restricted_t:dir { getattr read search };
+dontaudit steam_t crond_t:dir { getattr read search };
+dontaudit steam_t cupsd_t:dir { getattr read search };
+dontaudit steam_t data_home_t:dir ioctl;
+dontaudit steam_t devlog_t:sock_file write;
+dontaudit steam_t event_device_t:chr_file { read write };
+dontaudit steam_t firewalld_t:dir { getattr read search };
+dontaudit steam_t gpm_t:dir { getattr read search };
+dontaudit steam_t howl_port_t:udp_socket name_bind;
+dontaudit steam_t ipp_port_t:tcp_socket name_connect;
+dontaudit steam_t mnt_t:dir ioctl;
+dontaudit steam_t mongod_port_t:tcp_socket name_connect;
+dontaudit steam_t nsfs_t:file getattr;
+dontaudit steam_t policykit_t:dir { getattr read search };
+dontaudit steam_t rtkit_daemon_t:dir { getattr read search };
+dontaudit steam_t sysctl_net_t:file getattr;
+dontaudit steam_t systemd_logind_t:dbus send_msg;
+dontaudit steam_t systemd_logind_t:dir { getattr read search };
+dontaudit steam_t systemd_oomd_t:dir { getattr read search };
+dontaudit steam_t systemd_resolved_t:dir { getattr read search };
+dontaudit steam_t tty_device_t:chr_file getattr;
+dontaudit steam_t tuned_ppd_t:dir { getattr read search };
+dontaudit steam_t tuned_t:dir { getattr read search };
+dontaudit steam_t unconfined_service_t:dir { getattr read search };
+dontaudit steam_t usb_device_t:chr_file { read write };
+dontaudit steam_t user_home_t:dir ioctl;
+dontaudit steam_t userfaultfd_t:anon_inode create;
+dontaudit systemd_logind_t steam_t:dbus send_msg;
+#---
+
+optional_policy(`
+	gen_require(`
+		type staff_t;
+		role staff_r;
+	')
+
+	steam_run(staff_t, staff_r)
+')
+
+optional_policy(`
+	xserver_read_xdm_pid(steam_t)
+	xserver_rw_shm(steam_t)
+')
+
+optional_policy(`
+	dbus_system_bus_client(steam_t)
+')
+
+optional_policy(`
+	gnome_create_generic_cache_dir(steam_t)
+')

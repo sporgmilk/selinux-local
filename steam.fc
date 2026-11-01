@@ -1,0 +1,4 @@
+/usr/lib/steam/bin_steam.sh		--	gen_context(system_u:object_r:steam_exec_t,s0)
+HOME_DIR/\.steam(/.*)?              gen_context(system_u:object_r:steam_home_t,s0)
+HOME_DIR/\.local/share/Steam(/.*)?  gen_context(system_u:object_r:steam_home_t,s0)
+/run/media/nishu/Files/Steam(/.*)?  gen_context(system_u:object_r:steam_home_t,s0)
