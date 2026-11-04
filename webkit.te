@@ -1,0 +1,8 @@
+policy_module(webkit, 1.0.0)
+require {
+    type staff_t;
+    type dma_device_t;
+    class chr_file getattr;
+}
+
+allow staff_t dma_device_t:chr_file getattr;
