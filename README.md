@@ -1,1 +1,1 @@
-custom local policies for `staff_u` confined user
+custom fedora selinux policies for `staff_u` confined user
