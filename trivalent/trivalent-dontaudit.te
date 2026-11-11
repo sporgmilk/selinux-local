@@ -1,0 +1,44 @@
+
+module trivalent-dontaudit 1.0;
+
+require {
+	type trivalent_home_cdm_lib_t;
+	type staff_trivalent_t;
+	type staff_trivalent_script_t;
+	type systemd_logind_t;
+	type sysctl_dev_t;
+	type flatpak_home_t;
+	type systemd_resolved_var_run_t;
+	type proc_t;
+	type cache_home_t;
+	type devlog_t;
+	type staff_t;
+	class filesystem associate;
+	class file map;
+	class dir { read search };
+	class dbus send_msg;
+	class lnk_file read;
+}
+
+#============= staff_trivalent_script_t ==============
+dontaudit staff_trivalent_script_t proc_t:filesystem associate;
+
+#============= staff_trivalent_t ==============
+
+#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+dontaudit staff_trivalent_t cache_home_t:file map;
+dontaudit staff_trivalent_t devlog_t:lnk_file read;
+
+#!!!! This avc can be allowed using the boolean 'trivalent_exec_flatpaks'
+dontaudit staff_trivalent_t flatpak_home_t:dir read;
+dontaudit staff_trivalent_t staff_t:dir search;
+dontaudit staff_trivalent_t sysctl_dev_t:dir search;
+dontaudit staff_trivalent_t systemd_logind_t:dbus send_msg;
+dontaudit staff_trivalent_t systemd_resolved_var_run_t:dir read;
+
+#!!!! This avc can be allowed using one of the these booleans:
+#     domain_can_mmap_files, trivalent_drm
+dontaudit staff_trivalent_t trivalent_home_cdm_lib_t:file map;
+
+#============= systemd_logind_t ==============
+dontaudit systemd_logind_t staff_trivalent_t:dbus send_msg;

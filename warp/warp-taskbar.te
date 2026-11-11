@@ -1,4 +1,4 @@
-module warp-taskbar 1.0;
+module warp 1.0;
 require {
     type staff_t;
     type unconfined_service_t;

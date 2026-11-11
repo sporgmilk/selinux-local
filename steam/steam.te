@@ -174,6 +174,11 @@ allow staff_dbusd_t steam_t:fifo_file write;
 allow staff_dbusd_t tmp_t:file write;
 allow staff_t steam_t:dbus send_msg;
 
+# console log output
+allow steam_t gpm_t:dir { getattr read search };
+allow steam_t tty_device_t:chr_file getattr;
+allow steam_t event_device_t:chr_file getattr;
+
 # Required by the client
 allow steam_t dma_device_t:chr_file { getattr ioctl open read write };
 allow steam_t dri_device_t:chr_file { getattr ioctl map open read write };
@@ -355,7 +360,6 @@ dontaudit steam_t data_home_t:dir ioctl;
 dontaudit steam_t devlog_t:sock_file write;
 dontaudit steam_t event_device_t:chr_file { read write };
 dontaudit steam_t firewalld_t:dir { getattr read search };
-dontaudit steam_t gpm_t:dir { getattr read search };
 dontaudit steam_t howl_port_t:udp_socket name_bind;
 dontaudit steam_t ipp_port_t:tcp_socket name_connect;
 dontaudit steam_t mnt_t:dir ioctl;
@@ -368,7 +372,6 @@ dontaudit steam_t systemd_logind_t:dbus send_msg;
 dontaudit steam_t systemd_logind_t:dir { getattr read search };
 dontaudit steam_t systemd_oomd_t:dir { getattr read search };
 dontaudit steam_t systemd_resolved_t:dir { getattr read search };
-dontaudit steam_t tty_device_t:chr_file getattr;
 dontaudit steam_t tuned_ppd_t:dir { getattr read search };
 dontaudit steam_t tuned_t:dir { getattr read search };
 dontaudit steam_t unconfined_service_t:dir { getattr read search };

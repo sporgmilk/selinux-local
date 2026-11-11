@@ -1,0 +1,2 @@
+Policy to allow webkit to use bubblewrap.
+Can also be fixed with using this bubblewrap policy instead: https://codeberg.org/HastD/bubblewrap-utils
