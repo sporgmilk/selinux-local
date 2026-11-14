@@ -17,7 +17,7 @@ policy_module(trivalent, 1.0.4)
 ## Needed for camera access
 ## </p>
 ## </desc>
-gen_tunable(trivalent_rwmap_video_dev, false)
+gen_tunable(trivalent_rwmap_video_dev, true)
 
 ## <desc>
 ## <p>
@@ -27,7 +27,7 @@ gen_tunable(trivalent_rwmap_video_dev, false)
 ## Needed for extensions to be able to interact with certain flatpaks like keepassxc
 ## </p>
 ## </desc>
-gen_tunable(trivalent_exec_flatpaks, false)
+gen_tunable(trivalent_exec_flatpaks, true)
 
 ## <desc>
 ## <p>
@@ -35,7 +35,7 @@ gen_tunable(trivalent_exec_flatpaks, false)
 ## which implies executing writable files.
 ## </p>
 ## </desc>
-gen_tunable(trivalent_drm, false)
+gen_tunable(trivalent_drm, true)
 
 attribute_role trivalent_roles;
 
@@ -83,7 +83,6 @@ gen_require(`
 	type xserver_misc_device_t;
 	type staff_dbusd_t;
 	type systemd_logind_inhibit_var_run_t;
-	type bubblewrap_exec_t;
 	class fifo_file write;
 	class file { map write getattr open map read execute ioctl lock execute_no_trans };
 ')
@@ -170,10 +169,9 @@ tunable_policy(`trivalent_exec_flatpaks', `
 	read_lnk_files_pattern(trivalent_domain, flatpak_home_t, flatpak_home_t)
 	list_dirs_pattern(trivalent_domain, flatpak_home_t, flatpak_home_t)
 	# System flatpaks
-#	exec_files_pattern(trivalent_domain, var_lib_t, var_lib_t)
-#	read_lnk_files_pattern(trivalent_domain, var_lib_t, var_lib_t)
+	exec_files_pattern(trivalent_domain, var_lib_t, var_lib_t)
+	read_lnk_files_pattern(trivalent_domain, var_lib_t, var_lib_t)
 ')
- 
 
 tunable_policy(`trivalent_drm', `
 	mmap_exec_files_pattern(trivalent_domain, trivalent_home_t, trivalent_home_cdm_lib_t)
@@ -322,10 +320,10 @@ optional_policy(`
 	bluetooth_dbus_chat(trivalent_domain)
 ')
 
-#optional_policy(`
-#	# copy/pasting to distrobox apps
-#	container_spc_rw_pipes(trivalent_domain)
-#')
+optional_policy(`
+	# copy/pasting to distrobox apps
+	container_spc_rw_pipes(trivalent_domain)
+')
 
 allow trivalent_script_domain trivalent_domain:dir { getattr search };
 allow trivalent_script_domain trivalent_domain:file { open read };
@@ -384,11 +382,6 @@ seutil_manage_file_contexts(trivalent_script_domain)
 userdom_use_inherited_user_terminals(trivalent_script_domain)
 fs_all_mount_fs_perms_xattr_fs(trivalent_script_domain)
 
-# Policies for staff_u, requires bubblewrap policy from secureblue
-allow trivalent_domain bubblewrap_exec_t:file { getattr };
-allow trivalent_script_domain bubblewrap_exec_t:file { getattr };
-allow trivalent_domain bubblewrap_exec_t:file { { getattr open map read execute ioctl } ioctl lock execute_no_trans };
-allow trivalent_script_domain bubblewrap_exec_t:file { { getattr open map read execute ioctl } ioctl lock execute_no_trans };
 allow trivalent_domain systemd_logind_inhibit_var_run_t:fifo_file write;
 allow userdomain trivalent_domain:fifo_file write;
 allow userdomain tmpfs_t:file { map write };
@@ -403,6 +396,11 @@ allow session_bus_type trivalent_domain:process sigkill;
 allow trivalent_domain session_bus_type:dbus acquire_svc;
 allow trivalent_domain session_dbusd_tmp_t:dir { getattr search open };
 allow trivalent_domain session_dbusd_tmp_t:sock_file { getattr write open append };
+
+optional_policy(`
+	bubblewrap_exec(trivalent_script_domain)
+	bubblewrap_exec(trivalent_domain)
+')
 
 optional_policy(`
 	gen_require(`
