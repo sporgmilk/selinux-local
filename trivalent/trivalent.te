@@ -81,7 +81,6 @@ gen_require(`
 	type tmpfs_t;
 	type user_home_t;
 	type xserver_misc_device_t;
-	type staff_dbusd_t;
 	type systemd_logind_inhibit_var_run_t;
 	class fifo_file write;
 	class file { map write getattr open map read execute ioctl lock execute_no_trans };
@@ -383,16 +382,16 @@ userdom_use_inherited_user_terminals(trivalent_script_domain)
 fs_all_mount_fs_perms_xattr_fs(trivalent_script_domain)
 
 allow trivalent_domain systemd_logind_inhibit_var_run_t:fifo_file write;
-allow userdomain trivalent_domain:fifo_file write;
 allow userdomain tmpfs_t:file { map write };
-allow staff_dbusd_t trivalent_domain:fifo_file write;
-allow trivalent_domain userdomain:dbus send_msg;
+allow userdomain trivalent_domain:fifo_file write;
 allow userdomain trivalent_domain:dbus send_msg;
+allow session_bus_type trivalent_domain:fifo_file write;
+allow session_bus_type trivalent_domain:dbus send_msg;
+allow session_bus_type trivalent_domain:process sigkill;
+allow trivalent_domain userdomain:dbus send_msg;
 allow trivalent_domain self:dbus send_msg;
 allow trivalent_domain session_bus_type:dbus send_msg;
-allow session_bus_type trivalent_domain:dbus send_msg;
 allow trivalent_domain session_bus_type:unix_stream_socket connectto;
-allow session_bus_type trivalent_domain:process sigkill;
 allow trivalent_domain session_bus_type:dbus acquire_svc;
 allow trivalent_domain session_dbusd_tmp_t:dir { getattr search open };
 allow trivalent_domain session_dbusd_tmp_t:sock_file { getattr write open append };
