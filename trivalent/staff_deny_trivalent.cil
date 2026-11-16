@@ -1,0 +1,2 @@
+(deny staff_t trivalent_home_t(dir (open read)))
+(deny staff_t trivalent_home_t(file (open read)))
