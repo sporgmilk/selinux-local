@@ -33,4 +33,3 @@ optional_policy(`
 	thunar_run(trivalent_domain, staff_r)
 	domtrans_pattern(thunar_t, bin_t, staff_t)
 ')
-

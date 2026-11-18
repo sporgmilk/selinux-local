@@ -13,32 +13,43 @@ require {
 	type cache_home_t;
 	type devlog_t;
 	type staff_t;
+	type user_home_t;
+	type user_tmp_t;
+	type fonts_cache_t;
+	type usr_t;
+	type var_lib_t;
+	type nsfs_t;
+	type syslogd_port_t;
+	type systemd_userdbd_runtime_t;
 	class filesystem associate;
-	class file map;
-	class dir { read search };
+	class file { map open read getattr };
+	class dir { read search setattr watch };
 	class dbus send_msg;
-	class lnk_file read;
+	class lnk_file { read create unlink };
+	class unix_stream_socket { getattr ioctl };
+	class cap_userns setpcap;
+	class udp_socket name_bind;
 }
 
-#============= staff_trivalent_script_t ==============
+dontaudit staff_trivalent_t trivalent_home_cdm_lib_t:file map;
+dontaudit systemd_logind_t staff_trivalent_t:dbus send_msg;
+dontaudit staff_trivalent_script_t staff_t:unix_stream_socket { getattr ioctl };
 dontaudit staff_trivalent_script_t proc_t:filesystem associate;
-
-#============= staff_trivalent_t ==============
-
-#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+dontaudit staff_trivalent_t self:cap_userns setpcap;
+dontaudit staff_trivalent_t user_home_t:file map;
+dontaudit staff_trivalent_t user_tmp_t:lnk_file { create unlink };
 dontaudit staff_trivalent_t cache_home_t:file map;
+dontaudit staff_trivalent_t fonts_cache_t:dir setattr;
 dontaudit staff_trivalent_t devlog_t:lnk_file read;
-
-#!!!! This avc can be allowed using the boolean 'trivalent_exec_flatpaks'
-dontaudit staff_trivalent_t flatpak_home_t:dir read;
+dontaudit staff_trivalent_t flatpak_home_t:dir { read watch };
 dontaudit staff_trivalent_t staff_t:dir search;
+dontaudit staff_trivalent_t staff_t:file { open read };
+dontaudit staff_trivalent_t usr_t:dir watch;
+dontaudit staff_trivalent_t var_lib_t:dir watch;
+dontaudit staff_trivalent_t sysctl_dev_t:file { getattr open read };
 dontaudit staff_trivalent_t sysctl_dev_t:dir search;
 dontaudit staff_trivalent_t systemd_logind_t:dbus send_msg;
 dontaudit staff_trivalent_t systemd_resolved_var_run_t:dir read;
-
-#!!!! This avc can be allowed using one of the these booleans:
-#     domain_can_mmap_files, trivalent_drm
-dontaudit staff_trivalent_t trivalent_home_cdm_lib_t:file map;
-
-#============= systemd_logind_t ==============
-dontaudit systemd_logind_t staff_trivalent_t:dbus send_msg;
+dontaudit staff_trivalent_t nsfs_t:file getattr;
+dontaudit staff_trivalent_t syslogd_port_t:udp_socket name_bind;
+dontaudit staff_trivalent_t systemd_userdbd_runtime_t:dir read;
