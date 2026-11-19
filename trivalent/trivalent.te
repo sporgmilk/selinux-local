@@ -92,7 +92,9 @@ trivalent_filetrans_home_content(trivalent_script_domain)
 
 # internal
 allow trivalent_domain self:process { execmem getcap getsched setcap setrlimit setsched sigkill signal signull };
-allow trivalent_domain self:process ptrace;
+tunable_policy(`deny_ptrace',`',`
+	allow trivalent_domain self:process ptrace;
+')
 allow trivalent_domain self:dir manage_dir_perms;
 allow trivalent_domain self:lnk_file manage_lnk_file_perms;
 allow trivalent_domain self:fifo_file { manage_fifo_file_perms relabelfrom relabelto };
@@ -331,7 +333,9 @@ allow trivalent_script_domain self:file { create };
 allow trivalent_script_domain self:user_namespace create;
 allow trivalent_script_domain self:cap_userns { sys_ptrace sys_admin setpcap };
 allow trivalent_script_domain self:process { setcap setsched };
-allow trivalent_script_domain self:process ptrace;
+tunable_policy(`deny_ptrace',`',`
+	allow trivalent_script_domain self:process ptrace;
+')
 allow trivalent_script_domain user_home_t:dir { search };
 allow trivalent_script_domain cache_home_t:dir { mounton };
 allow trivalent_script_domain chrome_sandbox_home_t:dir { manage_dir_perms };
@@ -381,20 +385,15 @@ seutil_manage_file_contexts(trivalent_script_domain)
 userdom_use_inherited_user_terminals(trivalent_script_domain)
 fs_all_mount_fs_perms_xattr_fs(trivalent_script_domain)
 
-allow trivalent_domain systemd_logind_inhibit_var_run_t:fifo_file write;
-allow userdomain tmpfs_t:file { map write };
+#Without this rule trivalent crashes on sway
+allow userdomain tmpfs_t:file { map write }; 
+# xdg-desktop-portal acces
 allow userdomain trivalent_domain:fifo_file write;
 allow userdomain trivalent_domain:dbus send_msg;
+allow trivalent_domain userdomain:dbus send_msg;
 allow session_bus_type trivalent_domain:fifo_file write;
 allow session_bus_type trivalent_domain:dbus send_msg;
-allow session_bus_type trivalent_domain:process sigkill;
-allow trivalent_domain userdomain:dbus send_msg;
-allow trivalent_domain self:dbus send_msg;
 allow trivalent_domain session_bus_type:dbus send_msg;
-allow trivalent_domain session_bus_type:unix_stream_socket connectto;
-allow trivalent_domain session_bus_type:dbus acquire_svc;
-allow trivalent_domain session_dbusd_tmp_t:dir { getattr search open };
-allow trivalent_domain session_dbusd_tmp_t:sock_file { getattr write open append };
 
 optional_policy(`
 	bubblewrap_exec(trivalent_script_domain)
